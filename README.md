@@ -36,3 +36,8 @@ for filename in filenames:
     dfs.append(dd)
 big_frame = pd.concat(dfs, ignore_index=True)
 ```
+Because of the dependence between daily stock prices, we have to work with the rate of return instead of the stock price.
+```python
+ReturnRate = (big_frame['adjClose']-big_frame['yesterday'])/big_frame['yesterday']
+big_frame.insert(1,"ReturnRate", ReturnRate, True)
+```
