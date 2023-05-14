@@ -93,7 +93,7 @@ for a in q1:
 slr_sm_model = smf.ols(b, data=DataForReqression1)
 a = slr_sm_model_ko.rsquared
 #%%
-while a1 > 0.09:
+while a1 > 0.9:
     q1 = list(filter(lambda x : x != 'Intercept', q1))
     b = 'Stock149 ~'
     for a in q1:
@@ -225,10 +225,6 @@ print("RMSE of testing set:", rmse)
 
 
 # In[ ]:
-
-
-
-
 
 # In[ ]:
 

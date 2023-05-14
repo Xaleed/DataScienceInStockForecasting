@@ -1,49 +1,27 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2600]:
-
-
+# %%
 import numpy as np
 import pandas as pd
 import jdatetime
 from datetime import datetime
-
-
-# In[2601]:
-
-
+# %%
 Direction = "D:\\Data\\LossCalculation\\"
 #Direction = '/home/khaled/Project/Data/LossCalculate/'
 
 
-# In[2602]:
-
-
+# %%
 Return = pd.read_csv(Direction+'ReturnModified.csv')
 Index = pd.read_csv(Direction+'IndexModified.csv')
-
-
-# In[2603]:
-
-
+# %%
 #prepare data for regression using pivot
 DataForReqression = Return.pivot(index='GregorianDate', columns='CodeOfPerasianName', values='ReturnRate').fillna(0)
 DataForReqression0 = pd.merge(DataForReqression,Index, on = 'GregorianDate', how = 'left')
-
-
-# In[2604]:
-
-
+# %%
 DataForReqression0 = DataForReqression0[(DataForReqression0['ReturnIndexFaraBorse'] != -1) & (DataForReqression0['ReturnIndex'] != -1)]
-
-
-# In[2605]:
-
-
+# %%
 DataForReqression0 = DataForReqression0.reset_index()
-
-
 # In[2606]:
 
 
@@ -51,7 +29,6 @@ DataForReqression0 = DataForReqression0.reset_index()
 FirstDayOfInterval = '1400-08-11'
 LastDayOfInterval = '1400-10-20'
 LastDayOfInterval2 = '1400-08-10'
-
 def DateT(a):
     return(datetime.fromisoformat((a)))
 def DateT1(a):
@@ -60,12 +37,8 @@ DataForReqression0['GregorianDate'] = DataForReqression0['GregorianDate'].apply(
 gregorian_date = jdatetime.date(int(LastDayOfInterval[0:4]),int(LastDayOfInterval[5:7]),int(LastDayOfInterval[8:10])).togregorian()
 #dataMerg = dataMerg.fillna(str(pd.Timestamp(gregorian_date)))
 gregorian_date3 = jdatetime.date(int(LastDayOfInterval2[0:4]),int(LastDayOfInterval2[5:7]),int(LastDayOfInterval2[8:10])).togregorian()
-
 DataForReqression1 = DataForReqression0[(DataForReqression0['GregorianDate'] > pd.Timestamp(pd.to_datetime(gregorian_date))) |
                                        (DataForReqression0['GregorianDate'] < pd.Timestamp(pd.to_datetime(gregorian_date3)))]
-
-
-
 # In[2624]:
 
 
@@ -104,15 +77,15 @@ from sklearn.linear_model import LinearRegression
 #Sellect independet varibles based on correlation with dependent variable, i.e x149.
 q = list(DataForReqression.corr()['Stock149'].sort_values().index)
 # adding ReturnIndexFaraBorse and ReturnIndex to independent variables if they are not in.
-q.append('ReturnIndexFaraBorse') 
-q.append('ReturnIndex') 
+#q.append('ReturnIndexFaraBorse') 
+#q.append('ReturnIndex') 
 q.append('Stock149') 
 q = np.unique(q)
 DataForReqression2 = DataForReqression1[q]
 # preparing variables for regression
 q1 = list(DataForReqression2.corr()['Stock149'].sort_values().index)
-q1.append('ReturnIndexFaraBorse') 
-q1.append('ReturnIndex') 
+#q1.append('ReturnIndexFaraBorse') 
+#q1.append('ReturnIndex') 
 q1 = np.unique(q1)
 q1 = list(filter(lambda x : x != 'Stock149', q1))
 
@@ -147,7 +120,8 @@ print(slr_sm_model_ko.summary())
 param_slr = slr_sm_model_ko.summary2()
 sellect = param_slr.tables[1][param_slr.tables[1]['P>|t|']<0.99]
 q = list(sellect.index)
-
+#%%
+list(sellect.index)
 
 # In[2612]:
 
@@ -165,7 +139,7 @@ for a in q1:
     b = b + '+' + ' '+ a +' '
 slr_sm_model = smf.ols(b, data=DataForReqression1)
 a = slr_sm_model_ko.rsquared
-while a > 0.75:
+while a > 0.83:
     q1 = list(filter(lambda x : x != 'Intercept', q1))
     b = 'Stock149 ~'
     for a in q1:
@@ -177,7 +151,7 @@ while a > 0.75:
     sellect = EEEE.tables[1][EEEE.tables[1]['P>|t|']<np.quantile(EEEE.tables[1]['P>|t|'], 0.65)]
     q1 = list(sellect.index)
     q1 = list(filter(lambda x : x != 'Intercept', q1))
-    q1 = list(filter(lambda x : x != 'Stock149', q1))
+    #q1 = list(filter(lambda x : x != 'Stock149', q1))
 
     b = 'Stock149 ~'
     for a in q1:
@@ -189,7 +163,7 @@ while a > 0.75:
 # In[2614]:
 
 
-len(q1)
+sellect.index
 
 
 # In[2615]:
